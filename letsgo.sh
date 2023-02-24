@@ -21,7 +21,6 @@ if [ "$container" = "yes" ]; then
 	domains_share=$(find_mappings "/retronas_vm_location")
 	RETRO_SHARE=$(find_mappings "/retronas_virtiofs_location")
 	icon_location="/unraid_vm_icons/RetroNAS_Icon.png"
-	expected_checksum=$expected_checksum
 	XML_FILE="/app/retro.xml"
 else
 	# Use values so can run as a script only with no variable from Docker template
@@ -38,8 +37,6 @@ download_location="$domains_share/$vm_name"
 #-----------------------------------------------------------
 
 download_retronas() {
-    # Expected MD5 checksum for the retronas.zip file
-    expected_checksum="f80ab102b7ab1fec81cfc3d7b929dbd9"
 
     # Create download location if it doesn't exist
     if [ ! -d "$download_location" ]; then
