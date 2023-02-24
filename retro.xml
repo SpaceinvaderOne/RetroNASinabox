@@ -3,7 +3,7 @@
   <name>RetroNAS3</name>
   <uuid>2162f2ee-9b5d-4726-b369-f15a6b58b2be</uuid>
   <metadata>
-    <vmtemplate xmlns="unraid" name="RetroNAS" icon="retronas" os="debian"/>
+    <vmtemplate xmlns="unraid" name="Debian" icon="RetroNAS_Icon.png" os="debian"/>
   </metadata>
   <memory unit='KiB'>2097152</memory>
   <currentMemory unit='KiB'>2097152</currentMemory>
