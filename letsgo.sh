@@ -16,12 +16,11 @@ XML_FILE="/tmp/retro.xml"
 
 #-----------------------------------------------------------
 
-# Define the find_mappings function
 function find_mappings {
-	# Find the host path of the directory mapped to $1
-	HOST_PATH=$(cat /proc/mounts | awk -v dir="$1" '$2 == dir {print $1}')
+    # Find the host path of the directory mapped to $1
+    HOST_PATH=$(readlink -f "$1")
 
-	echo "$1 is mapped to ${HOST_PATH} on the host"
+    echo "$HOST_PATH"
 }
 
 #-----------------------------------------------------------
@@ -30,7 +29,9 @@ if [ "$container" = "yes" ]; then
 	# Get Variables as they  have been set in Docker template. Get location variables from bind mount info
 	vm_name="$vm_name"
 	domains_share=$(find_mappings "/retronas_vm_location")
+	echo "domains_share: $domains_share"
 	RETRO_SHARE=$(find_mappings "/retronas_virtiofs_location")
+	echo "RETRO_SHARE: $RETRO_SHARE"
 	icon_location="/unraid_vm_icons/RetroNAS_Icon.png"
 
 else
@@ -157,5 +158,7 @@ echo ""
 echo ""
 echo "A custom icon for the VM has been installed. However if you reboot the server it will not persist"
 echo "For it to persist across boots please install my custom vm icons container"
+echo  "$RETRO_SHARE"
+echo  "$domains_share"
 
 
