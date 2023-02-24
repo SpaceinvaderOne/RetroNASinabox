@@ -12,6 +12,7 @@ link2="https://drive.google.com/file/d/1b7rYrHQQEfrMHS_2aQ-9SlrPcGQUMlEd/view?us
 link3="https://drive.google.com/file/d/1WSBVT5bt5v-UdKdtygNBP-5Y7OXa8pK6/view?usp=share_link"
 expected_checksum="2baa07d6003a5bde665e72ac3ecf0d59"
 standard_icon_location="/usr/local/emhttp/plugins/dynamix.vm.manager/templates/images/RetroNAS_Icon.png"
+XML_FILE="/tmp/retro.xml"
 
 #-----------------------------------------------------------
 
@@ -21,14 +22,14 @@ if [ "$container" = "yes" ]; then
 	domains_share=$(find_mappings "/retronas_vm_location")
 	RETRO_SHARE=$(find_mappings "/retronas_virtiofs_location")
 	icon_location="/unraid_vm_icons/RetroNAS_Icon.png"
-	XML_FILE="/app/retro.xml"
+
 else
 	# Use values so can run as a script only with no variable from Docker template
 	vm_name="$standard_vm_name"
 	domains_share="$standard_domains_share"
 	RETRO_SHARE="$standard_RETRO_SHARE"
 	icon_location=$standard_icon_location
-	XML_FILE="/tmp/retro.xml"
+	
 
 fi
 
