@@ -1,34 +1,44 @@
 #!/bin/bash
 
 # Default values for the script. These will be overridden when the script is running in Docker
-link1="https://drive.google.com/uc?id=xxxxxxxxxxxxxxxxxxxxx"
-link2="https://drive.google.com/uc?id=xxxxxxxxxxxxxxxxxxxxx"
-link3="https://drive.google.com/file/d/1g7vxIIH3mxrqmsAfuN3Kib1cbZOfKgex/view?usp=sharing"
-vm_name="RetroNAS"
-domains_share="/mnt/user/domains"
-RETRO_SHARE="/mnt/user/retronas"
-XML_FILE="/tmp/retro.xml"
+# otherwise these standard variables will be used
+# Change these if needed or wanted only if running in userscripts. 
+standard_vm_name="RetroNAS"
+standard_domains_share="/mnt/user/domains"
+standard_RETRO_SHARE="/mnt/user/retronas"
+# Normally not necessary to change these at all
+standard_link1="https://drive.google.com/uc?id=xxxxxxxxxxxxxxxxxxxxx"
+standard_link2="https://drive.google.com/uc?id=xxxxxxxxxxxxxxxxxxxxx"
+standard_link3="https://drive.google.com/file/d/1g7vxIIH3mxrqmsAfuN3Kib1cbZOfKgex/view?usp=sharing"
+standard_expected_checksum="f80ab102b7ab1fec81cfc3d7b929dbd9"
+standard_icon_location="/usr/local/emhttp/plugins/dynamix.vm.manager/templates/images/RetroNAS_Icon.png"
 
 #-----------------------------------------------------------
 
 if [ "$container" = "yes" ]; then
-	# Get Variables as they will have been set in Docker as variables and bind mounts
-	# link1 get variable from container
-	# link2 get variable from container
-	# link3 get variable from container
-	# vm_name get variable from container
-	domains_share=$(find_mappings "/vm_location")
-	RETRO_SHARE=$(find_mappings "/virtiofs_location")
-	XML_FILE="./retro.xml"
-else
-	# Use values so can run as a script only with no variable from Docker template
-	link1="$link1"
+	# Get Variables as they  have been set in Docker template. Get location variables from bind mount info
+    link1="$link1"
 	link2="$link2"
 	link3="$link3"
 	vm_name="$vm_name"
-	domains_share="$domains_share"
-	RETRO_SHARE="$RETRO_SHARE"
-	expected_checksum="f80ab102b7ab1fec81cfc3d7b929dbd9"
+	domains_share=$(find_mappings "/vm_location")
+	RETRO_SHARE=$(find_mappings "/virtiofs_location")
+	icon_location="/unraid_vm_icons/RetroNAS_Icon.png"
+	expected_checksum=$expected_checksum
+	XML_FILE="./retro.xml"
+else
+	# Use values so can run as a script only with no variable from Docker template
+	link1="$standard_link1"
+	link2="$standard_link2"
+	link3="$standard_link3"
+	vm_name="$standard_vm_name"
+	domains_share="$standard_domains_share"
+	RETRO_SHARE="$standard_RETRO_SHARE"
+	icon_location=$standard_icon_location
+	expected_checksum=$standard_expected_checksum
+	XML_FILE="/tmp/retro.xml"
+
+
 fi
 
 download_location="$domains_share/$vm_name"
@@ -134,7 +144,7 @@ function download_xml {
 
 function download_icon {
 	local url="https://raw.githubusercontent.com/SpaceinvaderOne/RetroNASinabox/main/RetroNAS_Icon.png"
-	curl -s -L $url -o $download_location
+	curl -s -L $url -o $icon_location
 }
 
 #-----------------------------------------------------------
@@ -146,8 +156,13 @@ define_retronas
 echo ""
 echo ""
 echo ""
-echo "Done. Now goto the VMs tab and tou will see the RetroNAS VM installed. Start VM with console VNC "
+echo "Done. Now goto the VMs tab and you will see the RetroNAS VM installed."
 echo "Start VM with console VNC"
 echo "Login with defualt username 'retronas' and passwaord 'retronas'"
-echo "Once logged in, type retronas to start the config wizard "
+echo "Once logged in, type 'retronas' to start the config wizard"
+echo ""
+echo ""
+echo "A custom icon for the VM has been installed. However if you reboot the server it will not persist"
+echo "For it to persist across boots please install my custom vm icons container"
+
 
