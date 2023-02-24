@@ -7,9 +7,9 @@ standard_vm_name="RetroNAS"
 standard_domains_share="/mnt/user/domains"
 standard_RETRO_SHARE="/mnt/user/retronas"
 # Normally not necessary to change these at all
-standard_link1="https://drive.google.com/uc?id=xxxxxxxxxxxxxxxxxxxxx"
-standard_link2="https://drive.google.com/uc?id=xxxxxxxxxxxxxxxxxxxxx"
-standard_link3="https://drive.google.com/file/d/1g7vxIIH3mxrqmsAfuN3Kib1cbZOfKgex/view?usp=sharing"
+standard_link1="https://drive.google.com/file/d/1Tf0AFFw7i2KV0Z4pSVstGDeMW3cj3qH9/view?usp=share_link"
+standard_link2="https://drive.google.com/file/d/1b7rYrHQQEfrMHS_2aQ-9SlrPcGQUMlEd/view?usp=share_link"
+standard_link3="https://drive.google.com/file/d/1WSBVT5bt5v-UdKdtygNBP-5Y7OXa8pK6/view?usp=share_link"
 standard_expected_checksum="f80ab102b7ab1fec81cfc3d7b929dbd9"
 standard_icon_location="/usr/local/emhttp/plugins/dynamix.vm.manager/templates/images/RetroNAS_Icon.png"
 
