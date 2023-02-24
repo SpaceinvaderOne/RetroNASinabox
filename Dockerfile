@@ -9,6 +9,9 @@ WORKDIR /app
 # Copy the script into the container
 COPY letsgo.sh .
 
+# Copy the xml into the container
+COPY retro.xml .
+
 # Make the script executable
 RUN chmod +x letsgo.sh
 

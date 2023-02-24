@@ -25,7 +25,7 @@ if [ "$container" = "yes" ]; then
 	RETRO_SHARE=$(find_mappings "/retronas_virtiofs_location")
 	icon_location="/unraid_vm_icons/RetroNAS_Icon.png"
 	expected_checksum=$expected_checksum
-	XML_FILE="./retro.xml"
+	XML_FILE="/app/retro.xml"
 else
 	# Use values so can run as a script only with no variable from Docker template
 	link1="$standard_link1"
