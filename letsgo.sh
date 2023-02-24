@@ -16,6 +16,16 @@ XML_FILE="/tmp/retro.xml"
 
 #-----------------------------------------------------------
 
+# Define the find_mappings function
+function find_mappings {
+	# Find the host path of the directory mapped to $1
+	HOST_PATH=$(cat /proc/mounts | awk -v dir="$1" '$2 == dir {print $1}')
+
+	echo "$1 is mapped to ${HOST_PATH} on the host"
+}
+
+#-----------------------------------------------------------
+
 if [ "$container" = "yes" ]; then
 	# Get Variables as they  have been set in Docker template. Get location variables from bind mount info
 	vm_name="$vm_name"
@@ -114,14 +124,7 @@ define_retronas() {
 	virsh define "$XML_FILE"
 }
 
-#-----------------------------------------------------------
 
-function find_mappings {
-	# Find the host path of the directory mapped to $1
-	HOST_PATH=$(cat /proc/mounts | awk -v dir="$1" '$2 == dir {print $1}')
-
-	echo "$1 is mapped to ${HOST_PATH} on the host"
-}
 
 #-----------------------------------------------------------
 
