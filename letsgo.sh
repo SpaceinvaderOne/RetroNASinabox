@@ -17,8 +17,8 @@ XML_FILE="/tmp/retro.xml"
 #-----------------------------------------------------------
 
 function find_mappings {
-    # Find the host path of the directory mapped to $1
-    HOST_PATH=$(mount | awk -v dir="$1" '$3 == dir {print $1}')
+    HOST_PATH=$(mount | awk -v dir="$1" '$3 == dir {print $0}')
+    HOST_PATH=$(echo $HOST_PATH | cut -d' ' -f2)
 
     echo "$HOST_PATH"
 }
