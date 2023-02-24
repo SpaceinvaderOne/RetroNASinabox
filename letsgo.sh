@@ -7,19 +7,16 @@ standard_vm_name="RetroNAS"
 standard_domains_share="/mnt/user/domains"
 standard_RETRO_SHARE="/mnt/user/retronas"
 # Normally not necessary to change these at all
-standard_link1="https://drive.google.com/file/d/1Tf0AFFw7i2KV0Z4pSVstGDeMW3cj3qH9/view?usp=share_link"
-standard_link2="https://drive.google.com/file/d/1b7rYrHQQEfrMHS_2aQ-9SlrPcGQUMlEd/view?usp=share_link"
-standard_link3="https://drive.google.com/file/d/1WSBVT5bt5v-UdKdtygNBP-5Y7OXa8pK6/view?usp=share_link"
-standard_expected_checksum="f80ab102b7ab1fec81cfc3d7b929dbd9"
+link1="https://drive.google.com/file/d/1Tf0AFFw7i2KV0Z4pSVstGDeMW3cj3qH9/view?usp=share_link"
+link2="https://drive.google.com/file/d/1b7rYrHQQEfrMHS_2aQ-9SlrPcGQUMlEd/view?usp=share_link"
+link3="https://drive.google.com/file/d/1WSBVT5bt5v-UdKdtygNBP-5Y7OXa8pK6/view?usp=share_link"
+expected_checksum="2baa07d6003a5bde665e72ac3ecf0d59"
 standard_icon_location="/usr/local/emhttp/plugins/dynamix.vm.manager/templates/images/RetroNAS_Icon.png"
 
 #-----------------------------------------------------------
 
 if [ "$container" = "yes" ]; then
 	# Get Variables as they  have been set in Docker template. Get location variables from bind mount info
-    link1="$link1"
-	link2="$link2"
-	link3="$link3"
 	vm_name="$vm_name"
 	domains_share=$(find_mappings "/retronas_vm_location")
 	RETRO_SHARE=$(find_mappings "/retronas_virtiofs_location")
@@ -28,16 +25,12 @@ if [ "$container" = "yes" ]; then
 	XML_FILE="/app/retro.xml"
 else
 	# Use values so can run as a script only with no variable from Docker template
-	link1="$standard_link1"
-	link2="$standard_link2"
-	link3="$standard_link3"
 	vm_name="$standard_vm_name"
 	domains_share="$standard_domains_share"
 	RETRO_SHARE="$standard_RETRO_SHARE"
 	icon_location=$standard_icon_location
 	expected_checksum=$standard_expected_checksum
 	XML_FILE="/tmp/retro.xml"
-
 
 fi
 
