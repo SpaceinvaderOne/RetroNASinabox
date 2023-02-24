@@ -1,7 +1,7 @@
 FROM alpine
 
 # Install required dependencies
-RUN apk update && apk add bash curl unzip qemu-img
+RUN apk update && apk add bash curl unzip qemu-img sed libvirt gawk util-linux libvirt-client coreutils
 
 # Set the working directory
 WORKDIR /app
