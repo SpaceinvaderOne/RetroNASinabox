@@ -7,7 +7,7 @@
   vm_name="RetroNAS"
   domains_share="/mnt/user/domains"
   RETRO_SHARE="/mnt/user/retronas"
-  XML_FILE="/other/retro2.xml"
+  XML_FILE="/tmp/retro.xml"
   
   ########################################
   ########################################
@@ -23,13 +23,12 @@ if [ "$container" = "yes" ]; then
   XML_FILE="./retro.xml"
 else
   # Use values so can run as script only with no variable from docker template
-  link1="link1"
-  link2="link2"
-  link3="link3"
+  link1="$link1"
+  link2="$link2"
+  link3="$link3"
   vm_name="$vm_name"
   domains_share="$domains_share"
   RETRO_SHARE="$RETRO_SHARE"
-  get_xml
 fi
 
  default_download_location="$domains_share/$vm_name"
@@ -115,6 +114,12 @@ function find_mappings {
   echo "$1 is mapped to ${HOST_PATH} on the host"
 }
 
+#############################
+
+function download_xml {
+    local url="https://raw.githubusercontent.com/SpaceinvaderOne/RetroNASinabox/main/retro.xml"
+    curl -s -L $url -o $XML_FILE
+}
 
 
 
