@@ -7,15 +7,18 @@ RUN apk update && apk add curl unzip qemu-img
 WORKDIR /app
 
 # Copy the script and xml into the container
-COPY letsgo.sh .
-COPY retro.xml .
+COPY letsgo.sh /app/
+COPY retro.xml /app/
 
 # Set the file permissions
-RUN chmod +x letsgo.sh && \
-    chmod 644 retro.xml
+RUN chmod +x /app/letsgo.sh && \
+    chmod 644 /app/retro.xml
 
 # Define the volumes
 VOLUME ["/retronas_vm_location", "/retronas_virtiofs_location"]
 
 # Set the entrypoint
 ENTRYPOINT ["/app/letsgo.sh"]
+
+# Sleep for 60 seconds before exiting
+CMD ["sh", "-c", "sleep 60"]
