@@ -1,7 +1,7 @@
 FROM alpine
 
 # Install required dependencies
-RUN apk update && apk add curl unzip qemu-img
+RUN apk update && apk add bash curl unzip qemu-img
 
 # Set the working directory
 WORKDIR /app
