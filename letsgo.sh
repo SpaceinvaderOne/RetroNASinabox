@@ -29,7 +29,6 @@ else
 	domains_share="$standard_domains_share"
 	RETRO_SHARE="$standard_RETRO_SHARE"
 	icon_location=$standard_icon_location
-	expected_checksum=$standard_expected_checksum
 	XML_FILE="/tmp/retro.xml"
 
 fi
