@@ -1,22 +1,22 @@
-FROM alpine
+FROM alpine:latest
 
-# Install required dependencies
-RUN apk update && apk add bash curl unzip qemu-img sed libvirt gawk util-linux libvirt-client coreutils
+# Install required dependencies needed for the container
+RUN apk update && apk upgrade && \
+    apk add bash curl unzip qemu-img sed libvirt gawk util-linux libvirt-client coreutils
 
-# Set the working directory
+# Set  working directory here
 WORKDIR /app
 
-# Copy the script and xml into the container
+# Copy the assets into the container
 COPY letsgo.sh /app/
 COPY retro.xml /app/
 
-# Set the file permissions
+# Set permissions
 RUN chmod +x /app/letsgo.sh && \
     chmod 644 /app/retro.xml
 
-# Define the volumes
-VOLUME ["/retronas_vm_location", "/retronas_virtiofs_location"]
+# Set  entrypoint
+ENTRYPOINT ["/app/letsgo.sh"]
 
-# Run bash command to keep the container running
-CMD ["/bin/bash", "-c", "tail -f /dev/null"]
-
+# Sleep for 60 seconds before exiting
+CMD ["sh", "-c", "sleep 60"]

@@ -16,31 +16,35 @@ XML_FILE="/tmp/retro.xml"
 
 #-----------------------------------------------------------
 
-function find_mappings {
-    FULL_HOST_PATH=$(readlink -f "$1")
-
-    for MOUNT_POINT in $(mount | grep 'type fuse.' | awk '{print $3}'); do
-        if [[ $FULL_HOST_PATH == $MOUNT_POINT/* ]]; then
-            HOST_PATH=$(mount | grep "$MOUNT_POINT" | awk '{print $1}')
-            HOST_PATH=$(echo $FULL_HOST_PATH | sed "s|^$MOUNT_POINT|$HOST_PATH|")
-            echo "$HOST_PATH"
-            return
-        fi
-    done
-
-    echo "$FULL_HOST_PATH"
+function get_host_path {
+  target="$1"
+  output=$(findmnt --target "${target}")
+  fstype=$(echo "${output}" | awk '{print $3}')
+  source=$(echo "${output}" | awk '{print $2}')
+  
+   if [[ $output == *shfs* ]]; then
+    host_path=$(echo $output | awk -F'[\\[\\]]' '{print "/mnt/user"$2}')
+    echo "$host_path"
+  elif echo "${source}" | grep -qE '/dev/mapper/md[0-9]+'; then
+    disk_num=$(echo "${source}" | sed -nE 's|/dev/mapper/md([0-9]+)\[.*|\1|p')
+    subvol=$(echo "${source}" | sed -nE 's|/dev/mapper/md[0-9]+\[(.*)\]|\1|p')
+    host_path="/mnt/disk${disk_num}${subvol}"
+	echo "${host_path}"
+  else
+    echo "Unsupported filesystem type: ${fstype}"
+    return 1
+  fi
+  
 }
-
-
 
 #-----------------------------------------------------------
 
 if [ "$container" = "yes" ]; then
 	# Get Variables as they  have been set in Docker template. Get location variables from bind mount info
 	vm_name="$vm_name"
-	domains_share=$(find_mappings "/retronas_vm_location")
+	domains_share=$(get_host_path "/retronas_vm_location")
 	echo "domains_share: $domains_share"
-	RETRO_SHARE=$(find_mappings "/retronas_virtiofs_location")
+	RETRO_SHARE=$(get_host_path "/retronas_virtiofs_location")
 	echo "RETRO_SHARE: $RETRO_SHARE"
 	icon_location="/unraid_vm_icons/RetroNAS_Icon.png"
 
@@ -171,5 +175,3 @@ echo "For it to persist across boots please install my custom vm icons container
 echo  "$RETRO_SHARE"
 echo  "$domains_share"
 
-# keep running 4 debug
-tail -f /dev/null  
