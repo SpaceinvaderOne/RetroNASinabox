@@ -20,5 +20,5 @@ VOLUME ["/retronas_vm_location", "/retronas_virtiofs_location"]
 # Set the entrypoint
 ENTRYPOINT ["/app/letsgo.sh"]
 
-# Sleep for 60 seconds before exiting
-CMD ["sh", "-c", "sleep 60"]
+CMD ["tail", "-f", "/dev/null"]
+

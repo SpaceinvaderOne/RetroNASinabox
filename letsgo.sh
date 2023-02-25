@@ -17,10 +17,18 @@ XML_FILE="/tmp/retro.xml"
 #-----------------------------------------------------------
 
 function find_mappings {
-    # Find the host path of the directory mapped to $1
-    HOST_PATH=$(df "$1" | tail -1 | awk '{print $NF}')
+    FULL_HOST_PATH=$(readlink -f "$1")
 
-    echo "$HOST_PATH"
+    for MOUNT_POINT in $(mount | grep 'type fuse.' | awk '{print $3}'); do
+        if [[ $FULL_HOST_PATH == $MOUNT_POINT/* ]]; then
+            HOST_PATH=$(mount | grep "$MOUNT_POINT" | awk '{print $1}')
+            HOST_PATH=$(echo $FULL_HOST_PATH | sed "s|^$MOUNT_POINT|$HOST_PATH|")
+            echo "$HOST_PATH"
+            return
+        fi
+    done
+
+    echo "$FULL_HOST_PATH"
 }
 
 
