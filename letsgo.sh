@@ -51,6 +51,7 @@ if [ "$container" = "yes" ]; then
 	echo "RETRO_SHARE: $RETRO_SHARE"
 	icon_location="/unraid_vm_icons/RetroNAS_Icon.png"
 	download_location="/retronas_vm_location/""$vm_name"
+	vdisk_location="$domains_share/$vm_name"
 
 else
 	# Use values so can run as a script only with no variable from Docker template
@@ -59,6 +60,7 @@ else
 	RETRO_SHARE="$standard_RETRO_SHARE"
 	icon_location=$standard_icon_location
 	download_location="$domains_share/$vm_name"
+	vdisk_location="$domains_share/$vm_name"
 	
 
 fi
@@ -127,8 +129,8 @@ define_retronas() {
 	sed -i "s#<uuid>.*<\/uuid>#<uuid>$UUID<\/uuid>#" "$XML_FILE"
 	sed -i "s#<mac address='.*'/>#<mac address='$MAC'/>#" "$XML_FILE"
 
-	# Replace the source file location in the XML file with the download location and filename
-	sed -i "s#<source file='.*'/>#<source file='$download_location/vdisk1.img'/>#" "$XML_FILE"
+	# Replace the source file location in the XML file with the vdisk location and filename
+	sed -i "s#<source file='.*'/>#<source file='$vdisk_location/vdisk1.img'/>#" "$XML_FILE"
 
 	# Replace the source directory location in the XML file with the specified RetroNAS share directory
 	sed -i "s#<source dir='.*'/>#<source dir='$RETRO_SHARE'/>#" "$XML_FILE"
