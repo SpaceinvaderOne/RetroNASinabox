@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#--------------VARIABLES-----------------------------
+
 # Default values for the script. These will be overridden when the script is running in Docker
 # otherwise these standard variables will be used
 # Change these if needed or wanted only if running in userscripts. 
@@ -14,7 +16,7 @@ expected_checksum="2baa07d6003a5bde665e72ac3ecf0d59"
 standard_icon_location="/usr/local/emhttp/plugins/dynamix.vm.manager/templates/images/RetroNAS_Icon.png"
 XML_FILE="/tmp/retro.xml"
 
-#-----------------------------------------------------------
+#--------------FUNCTIONS-----------------------------
 
 function get_host_path {
   target="$1"
@@ -39,6 +41,7 @@ function get_host_path {
 
 #-----------------------------------------------------------
 
+function am_i_containerized {
 if [ "$container" = "yes" ]; then
 	# Get Variables as they  have been set in Docker template. Get location variables from bind mount info
 	vm_name="$vm_name"
@@ -47,6 +50,7 @@ if [ "$container" = "yes" ]; then
 	RETRO_SHARE=$(get_host_path "/retronas_virtiofs_location")
 	echo "RETRO_SHARE: $RETRO_SHARE"
 	icon_location="/unraid_vm_icons/RetroNAS_Icon.png"
+	download_location="/retronas_vm_location/""$vm_name"
 
 else
 	# Use values so can run as a script only with no variable from Docker template
@@ -54,11 +58,12 @@ else
 	domains_share="$standard_domains_share"
 	RETRO_SHARE="$standard_RETRO_SHARE"
 	icon_location=$standard_icon_location
+	download_location="$domains_share/$vm_name"
 	
 
 fi
 
-download_location="$domains_share/$vm_name"
+}
 
 #-----------------------------------------------------------
 
@@ -139,8 +144,6 @@ define_retronas() {
 	virsh define "$XML_FILE"
 }
 
-
-
 #-----------------------------------------------------------
 
 function download_xml {
@@ -157,10 +160,7 @@ function download_icon {
 
 #-----------------------------------------------------------
 
-download_retronas
-download_xml
-download_icon
-define_retronas
+function what_have_i_done {
 echo ""
 echo ""
 echo ""
@@ -174,4 +174,13 @@ echo "A custom icon for the VM has been installed. However if you reboot the ser
 echo "For it to persist across boots please install my custom vm icons container"
 echo  "$RETRO_SHARE"
 echo  "$domains_share"
+}
+
+#-----------------LETS GO-------------------------
+am_i_containerized 
+download_retronas
+download_xml
+download_icon
+define_retronas
+what_have_i_done
 
