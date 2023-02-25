@@ -156,9 +156,18 @@ function download_xml {
 #-----------------------------------------------------------
 
 function download_icon {
-	local url="https://raw.githubusercontent.com/SpaceinvaderOne/RetroNASinabox/main/RetroNAS_Icon.png"
-	curl -s -L $url -o $icon_location
+    local url="https://raw.githubusercontent.com/SpaceinvaderOne/RetroNASinabox/main/RetroNAS_Icon.png"
+
+    # Check if the exists (as will only if on Unraid)
+    if [ -d "$(dirname "$icon_location")" ]; then
+        # Download the file to the Unraid location
+        curl -s -L "$url" -o "$icon_location"
+    else
+        # Download the file to the current working directory for other Linus systems
+        curl -s -L "$url" -o "$(basename "$icon_location")"
+    fi
 }
+
 
 #-----------------------------------------------------------
 
