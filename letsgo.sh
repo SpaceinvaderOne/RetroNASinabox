@@ -171,4 +171,5 @@ echo "For it to persist across boots please install my custom vm icons container
 echo  "$RETRO_SHARE"
 echo  "$domains_share"
 
-
+# keep running 4 debug
+tail -f /dev/null  
