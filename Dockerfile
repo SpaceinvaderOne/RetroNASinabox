@@ -17,8 +17,6 @@ RUN chmod +x /app/letsgo.sh && \
 # Define the volumes
 VOLUME ["/retronas_vm_location", "/retronas_virtiofs_location"]
 
-# Set the entrypoint
-ENTRYPOINT ["/app/letsgo.sh"]
-
-CMD ["tail", "-f", "/dev/null"]
+# Run bash command to keep the container running
+CMD ["/bin/bash", "-c", "tail -f /dev/null"]
 
