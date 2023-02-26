@@ -15,7 +15,7 @@ When running on Unraid, the variables are set from the Docker template. When run
 
 2. Set the 'VM Share on Server': &nbsp;&nbsp;&nbsp; to where you store your VMs. The default is /mnt/user/domains.
 3. Set the 'RetroNAS data share': &nbsp;&nbsp; to a new share. This is where you will store all your ROMs and other RetroNAS data.
-4. Set the 'Name to call VM': &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; to the name you want the VM to have. The default is RetrNAS.
+4. Set the 'Name to call VM': &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; to the name you want the VM to have. The default is RetrNAS.
 ![Template image](https://github.com/SpaceinvaderOne/RetroNASinabox/raw/main/readme%20images/template_image.png)
 
 
