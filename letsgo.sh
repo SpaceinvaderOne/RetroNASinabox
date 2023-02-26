@@ -10,8 +10,10 @@ standard_domains_share="/mnt/user/domains"
 standard_RETRO_SHARE="/mnt/user/retronas"
 # Normally not necessary to change these at all
 link1="https://drive.google.com/file/d/1Tf0AFFw7i2KV0Z4pSVstGDeMW3cj3qH9/view?usp=share_link"
-link2="https://drive.google.com/file/d/1b7rYrHQQEfrMHS_2aQ-9SlrPcGQUMlEd/view?usp=share_link"
-link3="https://drive.google.com/file/d/1WSBVT5bt5v-UdKdtygNBP-5Y7OXa8pK6/view?usp=share_link"
+link2="https://drive.google.com/file/d/1W3gtvxrhAlFcCPQ3GMIu1UkhNDyVvOtm/view?usp=share_link"
+link3="https://drive.google.com/file/d/1b7rYrHQQEfrMHS_2aQ-9SlrPcGQUMlEd/view?usp=share_link"
+link4="https://drive.google.com/file/d/1WSBVT5bt5v-UdKdtygNBP-5Y7OXa8pK6/view?usp=share_link"
+
 expected_checksum="2baa07d6003a5bde665e72ac3ecf0d59"
 standard_icon_location="/usr/local/emhttp/plugins/dynamix.vm.manager/templates/images/RetroNAS_Icon.png"
 XML_FILE="/tmp/retro.xml"
@@ -78,7 +80,7 @@ download_retronas() {
     fi
 
     # Download the file
-    for link in "$link1" "$link2" "$link3"; do
+    for link in "$link1" "$link2" "$link3" "$link4"; do
         echo "Downloading file from link: $link ..."
         curl -L -c /tmp/cookies "https://drive.google.com/uc?export=download&id=$(echo "$link" | cut -d'/' -f6)" > /dev/null
         confirm=$(awk '/download/ {print $NF}' /tmp/cookies)
@@ -118,7 +120,7 @@ download_retronas() {
     done
 
     # Check if all links were tried and none worked and tell user google dont like too many downloading lol
-    if [ "$downloaded_checksum" != "$expected_checksum" ] && [ "$link" = "$link3" ]; then
+    if [ "$downloaded_checksum" != "$expected_checksum" ] && [ "$link" = "$link4" ]; then
 	    echo ""
 		echo ""
 		echo ""
