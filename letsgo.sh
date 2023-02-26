@@ -116,7 +116,20 @@ download_retronas() {
             exit 1
         fi
     done
+
+    # Check if all links were tried and none worked and tell user google dont like too many downloading lol
+    if [ "$downloaded_checksum" != "$expected_checksum" ] && [ "$link" = "$link3" ]; then
+	    echo ""
+		echo ""
+		echo ""
+        echo "I have tried all the Google drive links. None seem to work."
+		echo "They have most likely used all of today's available bandwidth."
+        echo "Please try again in 12 to 24 hours when the allowance should be reset."
+		sleep 60
+        exit 1
+    fi
 }
+
 
 #-----------------------------------------------------------
 
@@ -138,10 +151,6 @@ define_retronas() {
 	# Replace the name of the virtual machine in the XML file with the specified name
 	sed -i "s#<name>.*<\/name>#<name>$vm_name<\/name>#" "$XML_FILE"
 	
-	# Replace the icon location in the XML file with the specified location
-    sed -i "s#<vmtemplate xmlns=\"unraid\" name=\"RetroNAS\" icon=\"retronas\" os=\"debian\"/>#<vmtemplate xmlns=\"unraid\" name=\"$vm_name\" icon=\"$download_location/RetroNAS_Icon.png\" os=\"debian\"/>#" "$XML_FILE"
-
-
 	# Define the virtual machine using the modified XML file
 	virsh define "$XML_FILE"
 }
