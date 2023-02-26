@@ -63,5 +63,7 @@ Next start retronas by typing 'retronas' then enter. You will be prompted for yo
 
 ![login image](https://github.com/SpaceinvaderOne/RetroNASinabox/raw/main/readme%20images/config_retronas.gif)
  
- PS: This installer was made to make the installation process as painless as possible. The real work was done by Dan Mons who is the author of RetroNAS. His project is available here: https://github.com/danmons/retronas. Thank you, Dan, for making RetroNAS!
+6. This installer was made to make the installation process as painless as possible. The real work was done by Dan Mons who is the author of RetroNAS. His project is available here: https://github.com/danmons/retronas. Thank you, Dan, for making RetroNAS!
+
+Please note that the container/script downloads the vDisk image from one of three Google Drive accounts. There are limits on the daily bandwidth that Google allows, so if one account fails, the script will move on to the next. It is possible that all links may fail, in which case, please try again later when the bandwidth limits may have reset. If this issue occurs frequently, I will try and add additional download locations. Also, if a checksum fails, it does not necessarily mean that the image has been tampered with. It could be due to a failed link or corruption during the download. The MD5 check just makes sure the vDisk you get is correct.
 
