@@ -177,14 +177,13 @@ echo ""
 echo ""
 echo "Done. Now goto the VMs tab and you will see the RetroNAS VM installed."
 echo "Start VM with console VNC"
-echo "Login with defualt username 'retronas' and passwaord 'retronas'"
+echo "Login with default username 'retronas' and password 'retronas'"
 echo "Once logged in, type 'retronas' to start the config wizard"
 echo ""
 echo ""
 echo "A custom icon for the VM has been installed. However if you reboot the server it will not persist"
 echo "For it to persist across boots please install my custom vm icons container"
-echo  "$RETRO_SHARE"
-echo  "$domains_share"
+
 }
 
 #-----------------LETS GO-------------------------
