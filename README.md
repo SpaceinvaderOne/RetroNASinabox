@@ -24,8 +24,8 @@ When running on Unraid, the variables are set from the Docker template. When run
 
 ![Template image](https://github.com/SpaceinvaderOne/RetroNASinabox/raw/main/readme%20images/template_apply.png)
 
-6. Container will run. There is no webui. You can see the progress from clicking on log. Container will run for a couple of minutes. Click on the Unraid VM tab
-7. You will see the vm there. Start by clicking Start with console (VNC)
+6. The container will run. There is no webui. You can see the progress from clicking on the container log from the Unraid docker tab. The container will run for a couple of minutes then stop when done. (There is no need for the container to run again or it doesnt need to be running to use the RetroNAS vm)
+7. Click on the Unraid VM tab. You will see the vm there. Start by clicking Start with console (VNC)
 
 ![vm image](https://github.com/SpaceinvaderOne/RetroNASinabox/raw/main/readme%20images/vm_tab.png)
 
