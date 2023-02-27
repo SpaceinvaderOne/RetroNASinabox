@@ -140,7 +140,7 @@ download_retronas() {
 		echo ""
 		echo ""
         echo "I have tried all the Google drive links. None seem to work."
-		echo "There have been alot of downloads in the last 24 hours"
+		echo "There have been a lot of downloads in the last 24 hours"
 		echo "And have most likely used all of today's available bandwidth."
         echo "Please try again in 12 to 24 hours when the allowance should be reset."
 		sleep 60
