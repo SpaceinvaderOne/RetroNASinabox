@@ -85,24 +85,18 @@ download_retronas() {
         mkdir -p "$download_location"
     fi
 
-download_retronas() {
-
-    # Create download location if it doesn't exist
-    if [ ! -d "$download_location" ]; then
-        echo "Download location directory does not exist. Creating it..."
-        mkdir -p "$download_location"
-    fi
-
     # Download the file
     for link in "$link1" "$link2" "$link3" "$link4" "$slow_link"; do
         echo "Downloading file from link: $link ..."
         if [[ "$link" != "$slow_link" ]]; then
             if [[ "$link" == *"drive.google.com"* ]]; then
-                file_id=$(echo "$link" | sed -n 's/.*\/*\([^.]*\)\.*/\1/p')
+                file_id=$(echo "$link" | cut -d'/' -f6)
                 gdown "https://drive.google.com/uc?id=$file_id" -O "$download_location/retronas.zip"
             else
                 curl -L "$link" > "$download_location/retronas.zip"
             fi
+        else
+            curl -L "$slow_link" > "$download_location/retronas.zip"
         fi
 
         # Verify the checksum of the downloaded file
@@ -145,8 +139,8 @@ download_retronas() {
         echo ""
 		echo ""
 		echo ""
-        echo "I have tried all the Google Drive links. None seem to work."
-		echo "There have been a lot of downloads in the last 24 hours"
+        echo "I have tried all the Google drive links. None seem to work."
+		echo "There have been alot of downloads in the last 24 hours"
 		echo "And have most likely used all of today's available bandwidth."
         echo "Please try again in 12 to 24 hours when the allowance should be reset."
 		sleep 60
@@ -154,45 +148,6 @@ download_retronas() {
     fi
 }
 
-
-        # Decompress the file
-        echo "Decompressing file..."
-        unzip -o "$download_location/retronas.zip" -d "$download_location"
-
-        # Check if the file was successfully decompressed
-        if [ $? -eq 0 ]; then
-            # Delete the original file
-            rm -f "$download_location/retronas.zip"
-
-            # Check if vdisk1.img file exists and rename it if it does
-            if [ -f "$download_location/vdisk1.img" ]; then
-                old_filename=$(date +"vdisk1-old-%Y-%m-%d-%H-%M.img")
-                echo "Moving existing vdisk1.img file to $old_filename..."
-                mv "$download_location/vdisk1.img" "$download_location/$old_filename"
-            fi
-
-            echo "Moving decompressed file to $download_location/vdisk1.img..."
-            mv "$download_location/retronas.img" "$download_location/vdisk1.img"
-            break
-        else
-            echo "Failed to decompress file."
-            exit 1
-        fi
-    done
-
-    # Check if all links were tried and none worked
-    if [ "$downloaded_checksum" != "$expected_checksum" ] && [ "$link" = "$slow_link" ]; then
-        echo ""
-        echo ""
-        echo ""
-        echo "I have tried all the Google drive links. None seem to work."
-        echo "There have been a lot of downloads in the last 24 hours"
-        echo "And have most likely used all of today's available bandwidth."
-        echo "Please try again in 12 to 24 hours when the allowance should be reset."
-        sleep 60
-        exit 1
-    fi
-}
 
 #-----------------------------------------------------------
 
