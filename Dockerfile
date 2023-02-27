@@ -1,10 +1,12 @@
 FROM alpine:latest
 
+# Install apk package manager
+RUN apk update && apk add apk-tools
+
 # Install required dependencies needed for the container
 RUN apk update && apk upgrade && \
     apk add bash curl unzip qemu-img sed libvirt gawk util-linux libvirt-client coreutils && \
     apk add --no-cache python3 && \
-    pip3 install --upgrade pip && \
     pip3 install gdown
 
 # Set  working directory here
