@@ -8,8 +8,9 @@
 standard_vm_name="RetroNAS"
 standard_domains_share="/mnt/user/domains"
 standard_RETRO_SHARE="/mnt/user/retronas"
-# Normally not necessary to change these at all
+#REPLACE="no"
 
+# Normally not necessary to change these at all
 link1="https://drive.google.com/file/d/1hIR7um_cIbMSDUFTd_X8fY0UilycK3QR/view?usp=share_link" 
 link2="https://drive.google.com/file/d/1Kaz3eEQheuimgBi41ltNLVLkMyrHOwwf/view?usp=share_link" 
 link3="https://drive.google.com/file/d/1x3AIawf5Fa27M_qsJQVB6Kw1Gop35R7Z/view?usp=share_link"  
@@ -57,6 +58,7 @@ if [ "$container" = "yes" ]; then
 	icon_location="/unraid_vm_icons/RetroNAS_Icon.png"
 	download_location="/retronas_vm_location/""$vm_name"
 	vdisk_location="$domains_share/$vm_name"
+	check_vdisk
 	download_retronas
 	
 
@@ -68,11 +70,29 @@ else
 	icon_location=$standard_icon_location
 	download_location="$domains_share/$vm_name"
 	vdisk_location="$domains_share/$vm_name"
+	check_vdisk
 	download_retronas_no_gdown
 	
 
 fi
 
+}
+
+#-----------------------------------------------------------
+
+function check_vdisk() {
+ 
+    if [[ -f "$download_location/vdisk1.img" ]]; then
+        if [[ "${REPLACE:-yes}" == "no" ]]; then
+            echo "I have detected a vdisk in the location where you choose to install RetroNAS, so I am exiting. If you want me to continue, then change the option in the docker template and I will backup the old vdisk and continue."
+            exit 1
+        else
+            echo "A vdisk was detected. Continuing with backup and replacement." "$download_location/vdisk1_$(date +%Y-%m-%d_%H-%M-%S).img"
+           
+        fi
+    else
+        echo "No vdisk detected. Continuing."
+    fi
 }
 
 #-----------------------------------------------------------
@@ -286,12 +306,12 @@ echo "For it to persist across boots please install my custom vm icons container
 }
 
 #-----------------LETS GO-------------------------
+
 am_i_containerized 
 download_xml
 download_icon
 define_retronas
 what_have_i_done
-
 
 
 
