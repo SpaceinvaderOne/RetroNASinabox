@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <domain type='kvm'>
-  <name>RetroNAS3</name>
+  <name>RetroNAS</name>
   <uuid>2162f2ee-9b5d-4726-b369-f15a6b58b2be</uuid>
   <metadata>
     <vmtemplate xmlns="unraid" name="Debian" icon="RetroNAS_Icon.png" os="debian"/>
