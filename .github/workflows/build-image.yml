@@ -1,0 +1,86 @@
+name: Build RetroNAS image
+
+on:
+  schedule:
+    - cron: "0 4 1 * *"
+  workflow_dispatch:
+  push:
+    paths: ["build/**", ".github/workflows/build-image.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    # A hardware test run with /dev/kvm available took 13m15s.
+    # GitHub-hosted runners may not expose /dev/kvm, in which case QEMU
+    # falls back to TCG emulation, which is far slower. 180 minutes gives
+    # a wide margin over that fallback rather than just the KVM case.
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Report whether KVM is available
+        # This must never fail the build: a slow TCG-emulated build is
+        # still a build. Whether GitHub-hosted runners expose /dev/kvm is
+        # unknown (spec §10's one remaining open question), so report
+        # what's actually there rather than assume either way.
+        run: |
+          if [ -e /dev/kvm ]; then
+            echo "KVM present; the build will run at native speed."
+          else
+            echo "::warning::No /dev/kvm. QEMU will fall back to TCG emulation and this will be slow."
+          fi
+          ls -l /dev/kvm || true
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            qemu-system-x86 qemu-utils xorriso ovmf xz-utils
+          sudo usermod -aG kvm "$USER" || true
+
+      - name: Build and smoke-test the image
+        run: python3 -m build --workdir "${RUNNER_TEMP}/factory"
+
+      - name: Compress
+        # xz, not qemu-img -c: app/download.py decompresses with xz, and
+        # app/releases.py offers only assets ending .qcow2.xz. The container
+        # side is hardware-proven; the workflow conforms to it.
+        run: |
+          cd "${RUNNER_TEMP}/factory"
+          xz -T0 -6 retronas.qcow2
+          ls -lh retronas.qcow2.xz
+
+      - name: Upload as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: retronas-image
+          path: ${{ runner.temp }}/factory/retronas.qcow2.xz
+          retention-days: 7
+
+      - name: Compute the image tag
+        id: tag
+        run: echo "tag=$(date -u +%Y.%m).${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish as a release
+        # Only in the canonical repository, and only on a schedule run or a
+        # manual dispatch -- the workflow also triggers on push to build/**
+        # with no branch filter, and a repository check alone would let the
+        # next ordinary commit publish a real public release. GitHub attaches
+        # the sha256 digest to the asset automatically; app/releases.py reads
+        # exactly that field.
+        if: >-
+          github.repository == 'SpaceinvaderOne/RetroNASinabox' &&
+          (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd "${RUNNER_TEMP}/factory"
+          mv retronas.qcow2.xz "retronas-${{ steps.tag.outputs.tag }}.qcow2.xz"
+          gh release create "${{ steps.tag.outputs.tag }}" \
+            "retronas-${{ steps.tag.outputs.tag }}.qcow2.xz" \
+            --repo "${{ github.repository }}" \
+            --title "RetroNAS image ${{ steps.tag.outputs.tag }}" \
+            --notes "Monthly image build. Debian 13 + RetroNAS, installed and smoke-tested by CI. The container downloads and verifies this automatically -- there is nothing to download by hand."
