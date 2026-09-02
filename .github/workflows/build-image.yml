@@ -39,10 +39,38 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             qemu-system-x86 qemu-utils xorriso ovmf xz-utils
-          sudo usermod -aG kvm "$USER" || true
+
+      - name: Make /dev/kvm usable by this session
+        # /dev/kvm on the runner is crw-rw---- root:kvm, and adding the
+        # runner user to the kvm group cannot take effect inside the
+        # already-running session -- QEMU would open /dev/kvm, get
+        # permission denied, and exit before printing a single console
+        # line. A udev rule widening the node is the established practice
+        # for KVM use on hosted runners. Harmless when /dev/kvm is absent.
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules || true
+          sudo udevadm trigger --name-match=kvm || true
+          ls -l /dev/kvm || true
 
       - name: Build and smoke-test the image
         run: python3 -m build --workdir "${RUNNER_TEMP}/factory"
+
+      - name: Show the provisioning console on failure
+        # The factory's own failure message points at provision-console.log,
+        # which dies with the runner unless surfaced here.
+        if: failure()
+        run: tail -n 100 "${RUNNER_TEMP}/factory/provision-console.log" || true
+
+      - name: Keep the build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: ${{ runner.temp }}/factory/*.log
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Compress
         # xz, not qemu-img -c: app/download.py decompresses with xz, and
