@@ -6,6 +6,8 @@ booted on its own -- under UEFI, the way Unraid will boot it -- with no seed
 driving it.
 """
 
+import json
+import os
 import shutil
 import urllib.request
 from dataclasses import dataclass
@@ -104,7 +106,45 @@ def build(
     if outcome is not Outcome.SUCCEEDED:
         raise BuildFailed(f"provisioning {outcome}; full console at {console_log}\n{tail(console)}")
 
-    # The finished image must come up unaided, under the firmware Unraid uses.
+    # The overlay above is fast to provision on, but it is not what ships: its
+    # backing file is a path on the builder's own disk, and a real install
+    # target never has that path. Flatten to a plain qcow2 with the same
+    # backing data folded in, so the artifact that ships is self-contained.
+    flattened = workdir / "retronas.flattened.qcow2"
+    flattened.unlink(missing_ok=True)
+    code, _out, err = runner(
+        ["qemu-img", "convert", "-q", "-O", "qcow2", str(image), str(flattened)]
+    )
+    if code != 0:
+        raise BuildFailed(f"could not flatten the working image: {err.strip()}")
+    if not flattened.exists():
+        # Symmetric with qemu-img create above: an exit code is not proof a
+        # file was written.
+        raise BuildFailed(f"qemu-img reported success but {flattened} was not written")
+    os.replace(flattened, image)
+
+    # Self-containment is asserted, not assumed: parse qemu-img info's own
+    # JSON rather than trust that the convert above did its job.
+    code, out, err = runner(["qemu-img", "info", "--output=json", str(image)])
+    if code != 0:
+        raise BuildFailed(f"could not inspect the flattened image: {err.strip()}")
+    try:
+        info = json.loads(out)
+    except json.JSONDecodeError as exc:
+        raise BuildFailed(f"qemu-img info returned unparseable output: {out.strip()!r}") from exc
+    if "backing-filename" in info:
+        raise BuildFailed(
+            f"the flattened image still has a backing file: {info['backing-filename']}"
+        )
+
+    # The finished image must come up unaided, under the firmware Unraid
+    # uses, with no seed driving it. The Debian base is deleted here, before
+    # this boot rather than after, so the boot reproduces the real failure
+    # exactly: a real Unraid server never had the base image at all, only
+    # the flattened artifact. If the flatten above missed a backing-file
+    # reference, this is where that would surface.
+    base.unlink()
+
     # OVMF needs its own writable variable store per VM; the system copy is
     # read-only and sharing one between VMs corrupts boot entries.
     nvram = workdir / "OVMF_VARS.fd"
