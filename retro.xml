@@ -104,7 +104,6 @@
       <binary path='/usr/libexec/virtiofsd' xattr='on'>
         <cache mode='always'/>
         <sandbox mode='chroot'/>
-        <lock posix='on' flock='on'/>
       </binary>
       <source dir='/mnt/user/retronas'/>
       <target dir='retronas'/>
